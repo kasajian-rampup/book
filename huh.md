@@ -6,7 +6,7 @@ description: No description
 
 This is some content
 
-{% page-ref page="no-title.md" %}
+{% page-ref page="huh.md" %}
 
 * [ ] do this
 * [ ] then do that
@@ -136,7 +136,7 @@ asdfasdf
 {% endtab %}
 {% endtabs %}
 
-{% page-ref page="no-title.md" %}
+{% page-ref page="huh.md" %}
 
 {% hint style="info" %}
 hint ..  this is a hint
