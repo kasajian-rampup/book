@@ -2,50 +2,60 @@
 
 ## Notes
 
-```text
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
-prereq:
-	javascript, html
-----
-let's say we have html:
+### Prerequisite
+
+JavaScript and HTML
+
+### Getting Started
+
+Let's say we have an html file:
+
+```markup
 <div id='root'></div>
 <script type="text/javascript">
-const rootElement = document.getElementById('root');
-const element = document.createElement('div');
-element.textContent = 'Hello World';
-element.className = 'container';
-rootElement.appendChild(element);
+    const rootElement = document.getElementById('root');
+    const element = document.createElement('div');
+    element.textContent = 'Hello World';
+    element.className = 'container';
+    rootElement.appendChild(element);
 </script>
+```
 
-Summary: append a new child div to the root with some text content.
+> **Summary**: append a new child div to the root with some text content.
 
-Now let's do the same thing with React.
-This will expose the React and ReactDOM global.
+Now let's do the same thing with React.  \(the following will expose the React and ReactDOM global variables\):
 
+```markup
 <div id='root'></div>
 <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 <script type="text/javascript">
-const rootElement = document.getElementById('root');
-const element = React.createElement('div',
-    {className: 'container'}, 'Hello World');
-ReactDOM.render(element, rootElement);
+    const rootElement = document.getElementById('root');
+    const element = React.createElement('div',
+        {className: 'container'}, 'Hello World');
+    ReactDOM.render(element, rootElement);
 </script>
+```
 
-Summary: element is now created with Reac.createElement.
+> **Summary**: elements now created with Reac.createElement.
 
-Analyzing what the 'element' object is, notice there's a 'props' property
-which has the same properties as the 2nd argument to Reac.createElement,
-but with one more property called 'children' that's the 3rd argument.
-But if more than 3 arguments are passed in, then 'props.children' becomes
-an array.
-So this:
+Review the difference in the script code between the two snippets. 
+
+Analyzing what the 'element' object in the debugger, and notice there's a 'props' property, which has the same properties as the second argument to Reac.createElement, but with one more property called 'children' that's the third argument.  However, if more than three arguments are passed in, then 'props.children' becomes an array.  That means this:
+
+```javascript
 const element = React.createElement('div',
     {className: 'container'}, 'Hello World');
-Can be written as:
+```
+
+can be written as:
+
+```javascript
 const element = React.createElement('div',
     {className: 'container', children: 'Hello World'} );
+```
 
+```text
 ---
 JSX version
 
