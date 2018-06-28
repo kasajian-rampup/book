@@ -23,7 +23,7 @@ Let's say we have an html file:
 
 > **Summary**: append a new child div to the root with some text content.
 
-Now let's do the same thing with React.  \(the following will expose the React and ReactDOM global variables\):
+Now let's do the same thing with React.  \(the following will expose the `React` and `ReactDOM` global variables\):
 
 ```markup
 <div id='root'></div>
@@ -37,11 +37,11 @@ Now let's do the same thing with React.  \(the following will expose the React a
 </script>
 ```
 
-> **Summary**: elements now created with Reac.createElement.
+> **Summary**: elements now created with `React.createElement`.
 
 Review the difference in the script code between the two snippets. 
 
-Analyzing what the 'element' object in the debugger, and notice there's a 'props' property, which has the same properties as the second argument to Reac.createElement, but with one more property called 'children' that's the third argument.  However, if more than three arguments are passed in, then 'props.children' becomes an array.  That means this:
+Analyzing what the `element` object in the debugger, and notice there's a 'props' property, which has the same properties as the second argument to `Reac.createElement`, but with one more property called `children` that's the third argument.  However, if more than three arguments are passed in, then `props.children` becomes an array.  That means this:
 
 ```javascript
 const element = React.createElement('div',
@@ -55,22 +55,31 @@ const element = React.createElement('div',
     {className: 'container', children: 'Hello World'} );
 ```
 
-```text
----
-JSX version
+### Here's the JSX version
 
+```markup
 <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 <script type="text/babel">
-const rootElement = document.getElementById('root');
-const element = <div className="container">Hello Word</div>
-ReactDOM.render(element, rootElement);
+    const rootElement = document.getElementById('root');
+    const element = <div className="container">Hello Word</div>
+    ReactDOM.render(element, rootElement);
 </script>
+```
 
-Summary: in the script, the element uses JSX syntax.
+> **Summary:** in the script, the element uses JSX syntax.
+
+```javascript
 const element = <div className="container">Hello Word</div>
+```
+
 is exactly the same as:
+
+```javascript
 const element = React.createElement('div',
     {className: 'container', children: 'Hello World'} );
+```
+
+```text
 We also had to include babel, and change our script's <script> tag to
 reference babel.
 
