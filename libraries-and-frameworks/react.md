@@ -18,7 +18,7 @@ This entire section is about taking you step-by-step from normal HTML / JavaScri
 
 This entire section is about taking you step-by-step from normal HTML / JavaScript way of doing things \(without any frameworks\) to slowly evolving to using React, so that you have an opportunity to understand the purpose of each each step.
 
-Let's say we have an html file:
+Let's start with the following html, that doesn't use React.
 
 ```markup
 <div id='root'></div>
@@ -49,7 +49,7 @@ Now let's do the same thing with React.  \(the following will expose the `React`
 
 > **Summary**: elements now created with `React.createElement`.
 
-Review the difference in the script code between the two snippets. 
+Review the difference in the script code between the two snippets.
 
 Analyzing what the `element` object in the debugger, and notice there's a 'props' property, which has the same properties as the second argument to `Reac.createElement`, but with one more property called `children` that's the third argument.  However, if more than three arguments are passed in, then `props.children` becomes an array.  That means this:
 
@@ -540,4 +540,6 @@ Or using a simpler syntax:
 ```jsx
 const FlashButton = props => <button onClick={props.flashNext}>Flash</button>
 ```
+
+The only benefit to function components is that they're simpler to write components.  You're not required to use them and can use class components even when function components would suffice.
 
