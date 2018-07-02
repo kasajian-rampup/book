@@ -185,13 +185,13 @@ const element = (
 But what if we want one to say "hello" and the other "good-bye" world?  Let's rename the variable `helloWorld` to `message` and turn it into a function.
 
 ```jsx
-const message = (props) => <div>{props.msg}</div>
+const message = (props) => <div>{props.msg}</div>;
 const element = (
     <div className="container">
         {message({msg: 'Hello World'})}
         {message({msg: 'Goodbye World'})}
     </div>
-)
+);
 ```
 
 The syntax `{message({msg: 'Hello World'})}` is not very HTMLish.  It would be better if the syntax looked like this: `<Message msg='Hello World' />`
@@ -199,25 +199,25 @@ The syntax `{message({msg: 'Hello World'})}` is not very HTMLish.  It would be b
 All you have to do capitalize message, and it will work.  Below code is the same result as the above.
 
 ```jsx
-const Message = (props) => <div>{props.msg}</div>
+const Message = (props) => <div>{props.msg}</div>;
 const element = (
     <div className="container">
 	<Message msg='Hello World' />
 	<Message msg='Goodbye World' />
     </div>
-)
+);
 ```
 
 Now let's rename the `msg` prop to `children` prop:
 
 ```jsx
-const Message = (props) => <div>{props.children}</div>
+const Message = (props) => <div>{props.children}</div>;
 const element = (
     <div className="container">
 	<Message children='Hello World' />
 	<Message children='Goodbye World' />
     </div>
-)
+);
 ```
 
 Since JSX treats a prop named `children` in a special way, `<Message children='Hello World' />` can be expressed as: `<Message>Hello World</Message>`, it makes it look more like HTML.
@@ -421,7 +421,7 @@ ReactDOM.render(element, document.getElementById('root'));
 Up to this point, we've rendering a single component via react.  In a normal application, you will have multiple components that interact with each other.   Let's create a Flash component based on the FlashButton component, but which displays the flash text in a separate `Div`, as opposed to on the button label.   Let's bring back our first component, Message to do that:
 
 ```jsx
-const Message = (props) => <div>{props.children}</div>
+const Message = (props) => <div>{props.children}</div>;
 ```
 
 Now we have two components, `FlashButton` and `Message`.  Since we can only pass in a single component to `ReactDOM.render`,  let's create a new `Flash` component that will be composed of the these two components:
@@ -492,7 +492,7 @@ class FlashButton extends React.Component {
   }
 }
 
-const Message = (props) => <div>{props.children}</div>
+const Message = (props) => <div>{props.children}</div>;
 
 class Flash extends React.Component {
   state = { date: new Date().getTime()};
@@ -541,5 +541,116 @@ Or using a simpler syntax:
 const FlashButton = props => <button onClick={props.flashNext}>Flash</button>
 ```
 
-The only benefit to function components is that they're simpler to write components.  You're not required to use them and can use class components even when function components would suffice.
+The only benefit to function components is that they're simpler to write components.  You're not required to use them and can use class components even when function components would suffice.  In fact converting our original Message component from a function to class doesn't that much more code:
+
+Before:
+
+```jsx
+const Message = (props) => <div>{props.children}</div>;
+```
+
+After:
+
+```jsx
+class Message extends React.Component {
+    render = () => <div>{this.props.children}</div>;
+}
+```
+
+### Component Did Mount
+
+Up to this point, we have not been working with external data.  Let's create a simple component that fetches data from a URL and displays it.    Network request are typically initiated from the `componentDidMount()` method of a component.  Let's start with a simple component that uses the axios module to fetch remote data.  axios it not a requirement.  You can use any library you want.  First, add the following to the `<head>` section of your HTML:
+
+```markup
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+```
+
+We'll fetch the data from a public sample API that returns a set of 'posts'.  Feel free to enter this URL in your browser now so you can see what the JSON data looks like that is returned:
+
+[https://jsonplaceholder.typicode.com/posts/](https://jsonplaceholder.typicode.com/posts/)
+
+You should basically see an array of posts in JSON format.  We're going to fetch from this URL in our component, which we'll call `PostList`:
+
+```jsx
+class PostList extends React.Component {
+  state = { posts: [] }
+
+  render() ..
+  
+  componentDidMount() {
+    axios.get('https://jsonplaceholder.typicode.com/posts/')
+      .then(res => {
+        const posts = res.data;
+        this.setState({ posts });
+      });
+  }
+}
+```
+
+Now we need to update the `render()` method to display the posts:
+
+```jsx
+  render() {
+    return (
+    <ul>
+      {this.state.posts.map(post => <li key={post.id}>{post.title}</li>)}
+    </ul>
+    );
+  }
+```
+
+Whenever you display a list of items with React, always include a `key` attribute that has a unique value for each row.  In this case, we selected the `id` property of each post.
+
+Here't the entire HTML file using the `PostList` component:
+
+```jsx
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+class PostList extends React.Component {
+  state = { posts: [] }
+
+  render() {
+    return (
+    <ul>
+      {this.state.posts.map(post => <li key={post.id}>{post.title}</li>)}
+    </ul>
+    );
+  }
+
+  componentDidMount() {
+    axios.get('https://jsonplaceholder.typicode.com/posts/')
+      .then(res => {
+        const posts = res.data;
+        this.setState({ posts });
+      });
+  }
+}
+ReactDOM.render(<PostList/>, document.getElementById('root'));
+    </script>
+  </body>
+</html>
+```
+
+Realize now that you know enough to create simple web pages with end-to-end functionality.  You know how to display data; you know how to accept input from the user; you know how to create events, and you know how to fetch data from the network.
+
+### Component Did Update
+
+`componentDidUpdate(prevProps, prevState)` is another common method that your component can implement.  The most common use is to initiate a network request _after_ the UI has been updated.  This can be done to automatically save data to the server, or to fetch data based on UI changes.   `componentDidUpdate()` is called, passing previous props.  You should compare `this.props` to the `prevProps` to determine if a network request is actually necessary.  Similiarly, It's important to only call `setState` based on whether data has changed from `prevState`, or an infinite loop can be introduced.
+
+### Component Will Unmount
+
+`componentWillUnmount()` is another common method that your component can implement.  This is a good place to clean up, invalidate timers, cancel network requests, unsubscribe subscriptions created in `componentDidMount()`.
+
+  
+
 
