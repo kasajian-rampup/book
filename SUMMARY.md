@@ -9,6 +9,7 @@
       * [Exporting with Require](programming-languages/javascript/node/exporting-with-require.md)
       * [REST server with client](programming-languages/javascript/node/rest-server-with-client.md)
     * [Node with Browserify](programming-languages/javascript/node-with-browserify.md)
+    * [Language constructs](programming-languages/javascript/language-constructs.md)
 * [Command-line Utilities](command-line-utilities/README.md)
   * [curl](command-line-utilities/curl.md)
 * [Libraries and Frameworks](libraries-and-frameworks/README.md)

@@ -6,7 +6,11 @@ This entire section is about taking you step-by-step from normal HTML / JavaScri
 
 ### Prerequisite
 
-**Technology to be somewhat familiar with:** JavaScript, HTML and viewing an HTML file with Chrome.
+**Technology to be somewhat familiar with:**
+
+* JavaScript 5.x, including the _spread_ and _rest_ operators.
+* HTML
+* Chrome
 
 **Tools:**  No special tools needed.  Use your favorite text editor.   Examples use a single html file from "_download this HTML file_" of the reactjs.org getting-started page.
 
@@ -115,6 +119,8 @@ const myClassName = 'container'
 const element = <div className={myClassName}>{content}</div>
 ```
 
+### Props
+
 Speaking of props, a little about the Props object.   Something common with JSX is creation of a props object. 
 
 ```jsx
@@ -125,30 +131,13 @@ const props = {
 const element = <div {...props}/>
 ```
 
-But first, let's talk about the `...` used in the above code. 
-
-This is the _spread_ syntax in newer JavaScript.  Code like this `f(...a);` is the same as old style: `f.apply(null, a);` where `a` is an array, and each element of the array is passed as an argument to function `f`.
-
-Another thing you can do with the spread operator is to expand an array when building a new array.  This code `a = [5, 6]; n = [...a, 1, 2];` results  in `[ 5, 6, 1, 2 ]`.
-
-in even more recent versions of JavaScript, the spread syntax can be used with object literals. For instance, this code:
-
-```jsx
-x = { name: 'Bob', Id: 123 };
-o = { city: 'L.A.', ...x}
-```
-
-would merge `x`, when defining `o`, resulting in: `{ city: 'L.A.', name: 'Bob', Id: 123 }`
-
-In addition to the spread syntax, the `...` is also used with the _rest_ JavaScript syntax, which is used for working with variable number of parameters to functions.  For instance if a function header is `function f(...a) {`  ,  you  can call `f` passing in an arbitrary number of arguments which can then be accessed from the body of the function through array `a`.   For instance, if we call `f(1, 2, 3)` then in the body of the function, `a` is \[1, 2, 3\].  Conveniently, the JavaScript destructuring feature can be used to pull out specific parameters and treat the rest of the arguments as a single unit.    Let's say we only care about the first two arguments, and the rest we want to treat as a unit, perhaps to pass it on to another function, `f` can be `f(x, y, ...a)` , and in the body of the function, `x` and `y`  correspond to the first two values passed in, and `a` an array contain the _rest_ of the values.  Moreover, object destructuring can be used for the parameter, such as when `f` is `function f( {x, y, z}) {`  and called by passing an object `f( {x: 11, y: "why", z: 33 });` Note that an object with three properties are passed in, `x`, `y`, and `z`, not an array.   As with arrays, a function can use the _rest_ operator to group the parameters it doesn't care about.  If `f` is `function f( {x, ...rest} ) {`  , then you  it accepts any object that has at least property `x`, the rest of the object ends up in parameter `rest`.  The _spread_ and _rest_ operators will be used in various examples.
-
-So going back to the code above, `const element = <div {...props}/>` is a way inserting the `props` object into the `div`.  This allows us to use the props object as-is, or augment it by adding our own properties.  If we wanted to override the class name rather than use the one in props, we could try:
+The `...` in `const element = <div {...props}/>` is a way inserting the `props` object into the `div`.  This allows us to use the props object as-is, or augment it by adding our own properties.  If we wanted to override the class name rather than use the one in props, we could try:
 
 ```jsx
 const element = <div className="my-class" {...props}/>
 ```
 
-That's close, but it won't work if `props` already has `className` define.  Since `props` comes after our definition of `className`, it overrides it.  Changing it so that we specify `className` _after_ merging in props, fixes it:
+That's close, but it won't work if `props` already has `className` defined.  Since `props` comes after our definition of `className`, it overrides it.  Changing it so that we specify `className` _after_ merging in props, fixes it:
 
 ```jsx
 const element = <div {...props} className="my-class" />
@@ -165,6 +154,8 @@ which, if you recall, is the same as:
 ```jsx
 const element = <div {...props}>Hi there</div>
 ```
+
+### Refactor to a Component
 
 Now let's say we have the following code, with two `div`s that are identical:
 
@@ -231,7 +222,7 @@ const element = (
 
 Since JSX treats a prop named `children` in a special way, `<Message children='Hello World' />` can be expressed as: `<Message>Hello World</Message>`, it makes it look more like HTML.
 
-We just created a simple React component called `Message`:
+We just created a simple React Component called `Message`:
 
 ```jsx
 const Message = (props) => <div>{props.children}</div>
@@ -244,7 +235,9 @@ const element = (
 ReactDOM.render(element, document.getElementById('root'));
 ```
 
-This Reach component is a "function component" because it's defined using a function.  Another type of component is "class component", which is defined using a class.  Let's look at the difference.
+### Class Components
+
+This React component is a "function component" because it's defined using a function.  Another type of component is "class component", which is defined using a class.  Let's look at the difference.
 
 Here's a simple function component:
 
@@ -269,13 +262,13 @@ Both of these snippets do the same thing.  The difference is that a class compon
 Let's create a component with a button that will flash the days of the week every time you click it.  Starting with a simple class component with a button where we can specify the label as an attribute:
 
 ```jsx
-class Flash extends React.Component {
+class FlashButton extends React.Component {
   render() {
     return (<button>{this.props.label}</button>);
   }
 }
 
-const element = ( <Flash/> )
+const element = ( <FlashButton label='Flash Weekdays'/> )
 ReactDOM.render(element, document.getElementById('root'));
 ```
 
@@ -284,12 +277,11 @@ So far the component just has a button whose label we can specify.  Take note th
 Each time the button is clicked, we want to show the next day of the week, which means we must maintain state.  To to this, we can store our state in the `state` property of the component.  Let's first initialize the state to a default value.  We do this in the constructor of the component:
 
 ```jsx
-class Flash extends React.Component {
+class FlashButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = { date: new Date().getTime()};
   }
-  ..
 ```
 
 The `state` property is an object that contains the state defined by the component.  You want to put into this object any state that affects how the component is displayed.  You can store internal state as regular properties of the component.   In this case, we want to store the current date so that we can increment to the next date every time the user clicks the button.
@@ -297,7 +289,7 @@ The `state` property is an object that contains the state defined by the compone
 Let's display the day of the week as the label of the button.  This means we don't need to pass in the label as a prop.   We'll define a utility method to get the name of the day of the week from the `date` property of the `state` object:
 
 ```jsx
-class Flash extends React.Component {
+class FlashButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = { date: new Date().getTime()};
@@ -310,6 +302,8 @@ class Flash extends React.Component {
   }
 }
 ```
+
+#### Click event
 
 Let's define a click event on the button that will increment the date by one day.  In React, when an event is a method on the component, we'll need to use the JavaScript `bind()` method to bind the component to the method.   Let's look at that syntax first, and then we'll see an alternate syntax that can avoid the explicit use of `bind()`
 
@@ -332,7 +326,7 @@ Let's define a click event on the button that will increment the date by one day
   }
 ```
 
-First note the `onClick` event on the button html, referring to `this.handleClick`.   Inside of the `handleClick()` method, you wouldn't be able to access `this.state` if you didn't have the call to `bind()` in the constructor.  However, by using an arrow-function for the definition of `handleClick()`, we can avoid the explicit call to `bind()`in the constructor:
+First note the `onClick` event on the button html referring to `this.handleClick`.   Inside of the `handleClick()` method, you wouldn't be able to access `this.state` if you didn't have the call to `bind()` in the constructor.  However, we can rewrite the method as an arrow-function which automatically binds it to the component, eliminating the necessity to call `bind()` in the constructor:
 
 ```jsx
   constructor(props) {
@@ -344,7 +338,9 @@ First note the `onClick` event on the button html, referring to `this.handleClic
   }
 ```
 
-Before we write the date increment, let's do a bit more clean up by removing the constructor altogether by using the newer JavaScript syntax that allows us to initialize a property directly:
+#### Setting state
+
+Let's do one more simplification by taking advantage of the newer JavaScript syntax for initializing properties, which eliminates the need for the constructor:
 
 BEFORE:
 
@@ -361,7 +357,7 @@ AFTER:
   state = { date: new Date().getTime()};
 ```
 
-Now let's add the date-increment code.  One thing to note is that although we were able to set the `state` property of the component in the constructor or as a property initializer, by changing the `state` property directly, we cannot do this once the component starts rendering.   To set the `state`, we must call the `setState()` method, passing in a new `state` object.  It's best to think of the `state` object as immutable.  Once it's set, don't change it -- create a new one and pass it to `setState()`.  
+Now let's add the date-increment code to `handleClick`.  Changing the state requires a call to the `setState()` method.  Although we were able to set the `state` property directly when we initialized it, we cannot do this once the component starts rendering.   Instead we call the `setState()` method, passing in a new `state` object.  It's best to think of the `state` object as immutable.  Once it's set, don't change it -- instead, create a new one and pass it to `setState()`.   Example:
 
 ```jsx
   handleClick = () => {    
@@ -373,7 +369,7 @@ Now let's add the date-increment code.  One thing to note is that although we we
   }
 ```
 
-Because we are both reading and writing the `state` property, there's a potential for a race-condition which can be avoided by using an alternate version of the `setState()` method.  The other version of `setState`, we pass in a function which is invoked with the previous state value.  You only need to do this if your update depends on the current state:
+But there's one problem.   Because we are both reading and writing the `state` property, there's a potential for a race-condition which can be avoided by using an alternate version of `setState()` .  To use this other version, we pass it a function which is invoked with the previous state value.  You only need to do this if your update depends on the current state.  So let's do that:
 
 ```jsx
   handleClick = () => {    
@@ -387,10 +383,12 @@ Because we are both reading and writing the `state` property, there's a potentia
   }
 ```
 
+#### Final FlashButton component
+
 We now have a component which can be run -- each time you click the button, the text of the button changes to the next day of the week:
 
 ```jsx
-class Flash extends React.Component {
+class FlashButton extends React.Component {
   state = { date: new Date().getTime()};
 
   getDayOfWeek() {
@@ -414,10 +412,132 @@ class Flash extends React.Component {
   }
 }
 
-const element = ( <Flash label="Flash"/> )
+const element = ( <FlashButton label="Flash"/> )
 ReactDOM.render(element, document.getElementById('root'));
-
 ```
 
+### Multiple components
 
+Up to this point, we've rendering a single component via react.  In a normal application, you will have multiple components that interact with each other.   Let's create a Flash component based on the FlashButton component, but which displays the flash text in a separate `Div`, as opposed to on the button label.   Let's bring back our first component, Message to do that:
+
+```jsx
+const Message = (props) => <div>{props.children}</div>
+```
+
+Now we have two components, `FlashButton` and `Message`.  Since we can only pass in a single component to `ReactDOM.render`,  let's create a new `Flash` component that will be composed of the these two components:
+
+```jsx
+class Flash extends React.Component {
+  render() {
+    return (
+      <div>
+        <FlashButton/>
+        <Message>text</Message>
+      </div>
+    );
+  }
+}
+
+const element = ( <Flash label="Flash"/> )
+ReactDOM.render(element, document.getElementById('root'));
+```
+
+What we want is when the user clicks on the button, the flash text to appear in the `Message` component.   So how can the `Message` component access the state in the `FlashButton` component?  We can't.  We have to move the state to the new `Flash` component so that child component can access it from a common place if they need to.   So let's move the state to the `Flash` component and introduce a `flashNext` method.
+
+```jsx
+class Flash extends React.Component {
+  state = { date: new Date().getTime()};
+
+  flashNext = () => {
+    this.setState(prevState => {
+      const d = new Date(prevState.date);
+      d.setDate(d.getDate() + 1)    
+      return {
+        date: d.getTime()
+      }
+    });
+  };
+```
+
+Now we can bind the `flashNext()` method to the `onClick` event of `FlashButton`  by passing the method as a prop to the `FlashButton` component:
+
+```jsx
+<FlashButton flashNext={this.flashNext}/>
+```
+
+```jsx
+class FlashButton extends React.Component {
+  render() {
+    return (
+      <button onClick={this.props.flashNext}>Flash</button>
+    );
+  }
+}
+```
+
+Then we can show the flash text using the `Message` component.
+
+```jsx
+<Message>{this.getDayOfWeek()}</Message>
+```
+
+The final Flash Component that can be used is as follows:
+
+```jsx
+class FlashButton extends React.Component {
+  render() {
+    return (
+      <button onClick={this.props.flashNext}>Flash</button>
+    );
+  }
+}
+
+const Message = (props) => <div>{props.children}</div>
+
+class Flash extends React.Component {
+  state = { date: new Date().getTime()};
+
+  getDayOfWeek() {
+    return new Date(this.state.date).toLocaleString("en-US", { weekday: "long" });
+  }
+
+  flashNext = () => {
+    this.setState(prevState => {
+      const d = new Date(prevState.date);
+      d.setDate(d.getDate() + 1)    
+      return {
+        date: d.getTime()
+      }
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        <FlashButton flashNext={this.flashNext}/>
+        <Message>{this.getDayOfWeek()}</Message>
+      </div>
+    );
+  }
+}
+
+const element = ( <Flash label="Flash"/> )
+ReactDOM.render(element, document.getElementById('root'));
+```
+
+Technically the FlashButton component doesn't need be a class component since it doesn't have state.  It could be a function component and can be rewritten as follows:
+
+```jsx
+function FlashButton(props) {
+  return (
+    <button onClick={props.flashNext}>Flash</button>
+  );
+}
+```
+
+Or using a simpler syntax:
+
+```jsx
+const FlashButton = props => <button onClick={props.flashNext}>Flash</button>
+```
 
